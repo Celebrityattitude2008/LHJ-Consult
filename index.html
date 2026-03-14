@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LHJ Consult | Faith-Based Wellness</title>
+        <meta name="description" content="Faith-based wellness consultancy offering holistic nutrition, spiritual guidance, and personalized health services in Lagos, Nigeria.">
+        <meta name="keywords" content="wellness, faith, nutrition, health, Lagos, Nigeria, spiritual, holistic, consultation">
+        <meta name="author" content="LHJ Consult">
+        <!-- Open Graph -->
+        <meta property="og:title" content="LHJ Consult | Faith-Based Wellness">
+        <meta property="og:description" content="Transform your health journey with faith and science. Personalized dietary guidance, holistic wellness, and spiritual empowerment.">
+        <meta property="og:image" content="logo.png">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://lhjconsult.com">
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="LHJ Consult | Faith-Based Wellness">
+        <meta name="twitter:description" content="Faith-based wellness consultancy offering holistic nutrition and spiritual guidance.">
+        <meta name="twitter:image" content="logo.png">
+        <!-- Structured Data -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "LHJ Consult",
+            "url": "https://lhjconsult.com",
+            "logo": "logo.png",
+            "contactPoint": [{
+                "@type": "ContactPoint",
+                "email": "lhjconsultenquiry@gmail.com",
+                "telephone": "+2347050495999",
+                "contactType": "customer service"
+            }],
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Lagos",
+                "addressCountry": "Nigeria"
+            }
+        }
+        </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2D5A27',      /* Forest Green */
+                        secondary: '#F4F9F4',    /* Cream/Light Green */
+                        accent: '#1B261B',       /* Charcoal Green */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="font-sans antialiased text-accent dark:text-gray-100 bg-white dark:bg-zinc-950 transition-colors duration-300">
+
+    <header class="w-full bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800 fixed z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" alt="LHJ Consult Logo" class="w-10 h-10 rounded-lg border border-primary" loading="lazy" />
+                <span class="font-bold text-2xl tracking-tight text-accent dark:text-white">LHJ Consult</span>
+            </div>
+            <nav class="hidden md:flex flex-1 justify-center items-center gap-8 font-medium">
+                <a href="#about" class="hover:text-primary transition-colors">About</a>
+                <a href="#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="#testimonials" class="hover:text-primary transition-colors">Testimonials</a>
+                <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+            </nav>
+            <div class="flex items-center gap-2">
+                <button @click="darkMode = !darkMode" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800">
+                    <template x-if="!darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </template>
+                    <template x-if="darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </template>
+                </button>
+                <a href="#contact" class="bg-primary text-white px-6 py-2.5 rounded-full font-bold shadow-lg hover:bg-opacity-90 transition-all">Book Consultation</a>
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div x-show="mobileMenu" x-cloak class="absolute top-20 right-6 w-56 bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-xl shadow-xl p-6 flex flex-col gap-4 text-lg font-semibold z-[60]" @click.away="mobileMenu = false">
+            <button @click="mobileMenu = false" class="absolute top-4 right-4 text-gray-500">✕</button>
+            <a @click="mobileMenu = false" href="#about" class="hover:text-primary">About</a>
+            <a @click="mobileMenu = false" href="#services" class="hover:text-primary">Services</a>
+            <a @click="mobileMenu = false" href="#testimonials" class="hover:text-primary">Testimonials</a>
+            <a @click="mobileMenu = false" href="#contact" class="hover:text-primary">Contact</a>
+        </div>
+    </header>
+
+    <section class="pt-32 pb-20 px-6 bg-gradient-to-br from-green-50 via-green-100 to-white dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-950">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 bg-green-100 border border-green-200 text-primary px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
+                <span class="text-yellow-500">✨</span> Faith-Based Wellness
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-accent dark:text-white leading-tight">
+                Nourish Your Body,<br>
+                <span class="text-primary" style="font-style:italic">Strengthen Your Spirit</span>
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Transform your health journey with personalized dietary guidance rooted in faith and science. We believe true wellness embraces body, mind, and spirit.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#contact" class="w-full sm:w-auto bg-primary text-white px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-xl shadow-green-900/20">
+                    Start Your Journey <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+                <a href="#services" class="w-full sm:w-auto border-2 border-primary text-primary px-8 py-4 rounded-full font-bold hover:bg-primary/5 transition-all">
+                    Explore Services
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-secondary/50 dark:bg-zinc-900/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm uppercase tracking-widest font-bold mb-10">Trusted by hundreds of families</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-1">500+</div>
+                    <div class="text-gray-600 dark:text-gray-400">Clients Served</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-1">15+</div>
+                    <div class="text-gray-600 dark:text-gray-400">Years Experience</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold text-primary mb-1">98%</div>
+                    <div class="text-gray-600 dark:text-gray-400">Satisfaction Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6">
+        <div
+            x-data="slider()"
+            x-init="startAutoSlide(); window.addEventListener('keydown', handleKey);"
+            @mouseenter="isPaused = true"
+            @mouseleave="isPaused = false"
+            @touchstart="handleTouchStart($event)"
+            @touchend="handleTouchEnd($event)"
+            class="max-w-4xl mx-auto flex items-center justify-center relative py-20"
+            role="region"
+            aria-label="Bible verse slider"
+        >
+        <script>
+        function slider() {
+            return {
+                verses: [
+                    { text: 'Do you not know that your bodies are temples of the Holy Spirit, who is in you, whom you have received from God? You are not your own. You were bought at a price. Therefore honor God with your bodies.', ref: '1 Corinthians 6:19-20' },
+                    { text: 'I can do all things through Christ who strengthens me.', ref: 'Philippians 4:13' },
+                    { text: 'Beloved, I pray that you may prosper in all things and be in health, just as your soul prospers.', ref: '3 John 1:2' },
+                    { text: 'So whether you eat or drink or whatever you do, do it all for the glory of God.', ref: '1 Corinthians 10:31' },
+                    { text: 'Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.', ref: 'Proverbs 3:5-6' },
+                    { text: 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.', ref: 'Jeremiah 29:11' },
+                    { text: 'The Lord is my shepherd, I lack nothing. He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul. He guides me along the right paths for his name’s sake.', ref: 'Psalm 23:1-3' }
+                ],
+                current: 0,
+                interval: null,
+                isPaused: false,
+                animate: false,
+                startAutoSlide() {
+                    this.interval = setInterval(() => {
+                        if (!this.isPaused) {
+                            this.nextVerse();
+                        }
+                    }, 5000);
+                },
+                stopAutoSlide() {
+                    clearInterval(this.interval);
+                },
+                nextVerse() {
+                    this.animate = true;
+                    setTimeout(() => {
+                        this.current = this.current === this.verses.length - 1 ? 0 : this.current + 1;
+                        this.animate = false;
+                    }, 300);
+                },
+                prevVerse() {
+                    this.animate = true;
+                    setTimeout(() => {
+                        this.current = this.current === 0 ? this.verses.length - 1 : this.current - 1;
+                        this.animate = false;
+                    }, 300);
+                },
+                shareVerse() {
+                    const verse = this.verses[this.current];
+                    const text = `"${verse.text}" — ${verse.ref}`;
+                    if (navigator.share) {
+                        navigator.share({ text });
+                    } else {
+                        navigator.clipboard.writeText(text);
+                        alert('Verse copied to clipboard!');
+                    }
+                },
+                handleKey(e) {
+                    if (e.key === 'ArrowLeft') this.prevVerse();
+                    if (e.key === 'ArrowRight') this.nextVerse();
+                },
+                handleTouchStart(e) {
+                    this.touchStartX = e.touches[0].clientX;
+                },
+                handleTouchEnd(e) {
+                    const touchEndX = e.changedTouches[0].clientX;
+                    if (this.touchStartX - touchEndX > 50) this.nextVerse();
+                    if (touchEndX - this.touchStartX > 50) this.prevVerse();
+                }
+            }
+        }
+        </script>
+            <!-- Previous Card -->
+            <template x-if="verses.length > 1">
+                <div
+                    class="w-72 h-[340px] bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-3xl text-center shadow-xl absolute left-0 top-1/2 -translate-y-1/2 opacity-40 scale-90 pointer-events-none select-none transition-all duration-300 flex flex-col justify-center px-8"
+                >
+                    <div class="flex justify-center mb-4">
+                        <span class="bg-primary/10 rounded-full p-4">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8.17,20C12.14,20 17,14.9 17,8V8M16,2L10,2C10,2 10,2.15 10,2.45C10,2.45 12,2.45 12,4.5C12,6.5 10,7 10,7L16,7V2Z"/></svg>
+                        </span>
+                    </div>
+                    <blockquote class="text-lg italic font-serif text-accent dark:text-white leading-snug mb-2" x-text="'\"' + verses[(current === 0 ? verses.length - 1 : current - 1)].text + '\"'"></blockquote>
+                    <cite class="text-primary font-bold not-italic text-sm" x-text="'— ' + verses[(current === 0 ? verses.length - 1 : current - 1)].ref"></cite>
+                </div>
+            </template>
+            <!-- Center Card -->
+            <div
+                class="w-[420px] max-w-full bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 p-12 rounded-3xl text-center shadow-2xl relative z-10 mx-4 flex flex-col justify-center transition-all duration-300"
+                :class="animate ? 'opacity-0 translate-x-8' : 'opacity-100 translate-x-0'"
+                tabindex="0"
+                aria-live="polite"
+            >
+                <div class="flex justify-center mb-6">
+                    <span class="bg-primary/10 rounded-full p-6">
+                        <svg class="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8.17,20C12.14,20 17,14.9 17,8V8M16,2L10,2C10,2 10,2.15 10,2.45C10,2.45 12,2.45 12,4.5C12,6.5 10,7 10,7L16,7V2Z"/></svg>
+                    </span>
+                </div>
+                <blockquote class="text-2xl md:text-3xl italic font-serif text-accent dark:text-white leading-snug mb-6" x-html="'&quot;' + verses[current].text.replace(/\n/g, '<br>') + '&quot;'" style="min-height:3em;"></blockquote>
+                <cite class="text-primary font-bold not-italic mt-2" x-text="'— ' + verses[current].ref"></cite>
+                <button
+                    @click="shareVerse()"
+                    class="mt-6 mx-auto bg-primary/10 text-primary rounded-full px-6 py-2 font-bold flex items-center gap-2 hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Share verse"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    Share
+                </button>
+            </div>
+            <!-- Next Card -->
+            <template x-if="verses.length > 1">
+                <div
+                    class="w-72 h-[340px] bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-3xl text-center shadow-xl absolute right-0 top-1/2 -translate-y-1/2 opacity-40 scale-90 pointer-events-none select-none transition-all duration-300 flex flex-col justify-center px-8"
+                >
+                    <div class="flex justify-center mb-4">
+                        <span class="bg-primary/10 rounded-full p-4">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8.17,20C12.14,20 17,14.9 17,8V8M16,2L10,2C10,2 10,2.15 10,2.45C10,2.45 12,2.45 12,4.5C12,6.5 10,7 10,7L16,7V2Z"/></svg>
+                        </span>
+                    </div>
+                    <blockquote class="text-lg italic font-serif text-accent dark:text-white leading-snug mb-2" x-text="'\"' + verses[(current === verses.length - 1 ? 0 : current + 1)].text + '\"'"></blockquote>
+                    <cite class="text-primary font-bold not-italic text-sm" x-text="'— ' + verses[(current === verses.length - 1 ? 0 : current + 1)].ref"></cite>
+                </div>
+            </template>
+            <!-- Navigation Buttons -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4 z-20">
+                <button
+                    @click="prevVerse()"
+                    class="bg-primary/10 text-primary rounded-full p-3 hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Previous verse"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <button
+                    @click="nextVerse()"
+                    class="bg-primary/10 text-primary rounded-full p-3 hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Next verse"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 px-6 bg-white dark:bg-zinc-950">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-4xl font-bold mb-6">Where Faith Meets <span class="text-primary">Wellness</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 text-lg mb-8 leading-relaxed">
+                    At LHJ Consult, we believe that physical health is a spiritual discipline. Our mission is to bridge the gap between evidence-based nutrition science and biblical wisdom, empowering you to live a vibrant, purposeful life.
+                </p>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="p-4 border border-gray-100 dark:border-zinc-800 rounded-xl">
+                        <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3">⭐</div>
+                        <h4 class="font-bold mb-1">Spirituality</h4>
+                        <p class="text-xs text-gray-500">Faith-centered health.</p>
+                    </div>
+                    <div class="p-4 border border-gray-100 dark:border-zinc-800 rounded-xl">
+                        <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3">❤️</div>
+                        <h4 class="font-bold mb-1">Empathetic</h4>
+                        <p class="text-xs text-gray-500">Deep listening.</p>
+                    </div>
+                    <div class="p-4 border border-gray-100 dark:border-zinc-800 rounded-xl">
+                        <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3">🏆</div>
+                        <h4 class="font-bold mb-1">Excellence</h4>
+                        <p class="text-xs text-gray-500">High standards.</p>
+                    </div>
+                    <div class="p-4 border border-gray-100 dark:border-zinc-800 rounded-xl">
+                        <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-3">🌱</div>
+                        <h4 class="font-bold mb-1">Resilience</h4>
+                        <p class="text-xs text-gray-500">Empowering habits.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-secondary dark:bg-zinc-900 rounded-3xl p-8 relative">
+                <div class="aspect-[4/5] bg-gray-200 rounded-2xl mb-8 overflow-hidden flex items-center justify-center text-gray-400">
+                    <img src="judith.jpg" alt="Judith Obiefule" class="object-cover w-full h-full" loading="lazy">
+                </div>
+                <h3 class="text-2xl font-bold mb-1">Judith Obiefule</h3>
+                <p class="text-primary font-semibold mb-4 text-sm uppercase tracking-wide">Certified Health & Nutrition Strategist</p>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 italic leading-relaxed">
+                    "Judith Obiefule is the visionary founder of LHJ Consult, a faith-based wellness consultancy dedicated to transforming lives through holistic health practices. With over 15 years of experience in health and nutrition, she has helped hundreds of individuals and families discover the profound connection between physical wellness and spiritual vitality.
+
+                    As a Certified Health and Nutrition Strategist, Judith combines evidence-based nutritional science with faith-centered guidance to create personalized wellness journeys. Her signature "21-Day Fruits2Fitness" challenge has empowered countless participants—affectionately known as "Comrades"—to achieve lasting health transformations.
+                    
+                    Judith's approach is rooted in the belief that true wellness encompasses body, mind, and spirit. Her warm, compassionate style and unwavering commitment to her clients' success have made her a trusted voice in the Nigerian wellness community."
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-white dark:bg-zinc-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm">Certified Nutritionist</span>
+                    <span class="bg-white dark:bg-zinc-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm">Wellness Coach</span>
+                    <span class="bg-white dark:bg-zinc-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm">Faith-Based Counselor</span>
+                </div>
+                <div class="mt-6">
+                    <a href="https://www.linkedin.com/in/ifeoma-judith-obiefule-6a3732125" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-full font-bold shadow-lg hover:bg-opacity-90 transition-all">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.25c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.25h-3v-5.5c0-1.104-.896-2-2-2s-2 .896-2 2v5.5h-3v-10h3v1.354c.542-.833 1.542-1.354 2.646-1.354 1.654 0 3 1.346 3 3v7z"/></svg>
+                        Founder LinkedIn
+                    </a>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-20 px-6 bg-secondary/30 dark:bg-zinc-900/30">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16">Transformative <span class="text-primary">Services</span></h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <template x-for="service in [
+                    { title: 'Holistic Nutrition', desc: 'Personalized plans blending science and spirit.', points: ['Lifestyle audits', 'Custom meal plans'] },
+                    { title: 'Therapeutic Nutrition', desc: 'Addressing specific health conditions through diet.', points: ['Blood sugar balance', 'Hormonal health'] },
+                    { title: 'Post-Operative Wellness', desc: 'Specialized care to accelerate your healing journey.', points: ['Nutrient recovery', 'Inflammation reduction'] },
+                    { title: 'Corporate Wellness', desc: 'Boosting workforce health and spiritual morale.', points: ['Workshop sessions', 'Executive coaching'] },
+                    { title: 'Community Impact', desc: 'Empowering local communities with health education.', points: ['Public speaking', 'Social initiatives'] },
+                    { title: 'Education & Advisory', desc: 'Expert research and guidance for organizations.', points: ['Policy advisory', 'Health research'] }
+                ]">
+                    <div class="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-2xl hover:-translate-y-2 transition-all group">
+                        <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3" x-text="service.title"></h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-6" x-text="service.desc"></p>
+                        <ul class="mb-8 space-y-2 text-sm font-medium">
+                            <template x-for="point in service.points">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-primary">✓</span> <span x-text="point"></span>
+                                </li>
+                            </template>
+                        </ul>
+                        <button class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                            Learn More <span>→</span>
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16">Stories of <span class="text-primary">Transformation</span></h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 dark:bg-zinc-900 p-8 rounded-3xl border-l-4 border-primary">
+                    <div class="text-yellow-500 mb-4">★★★★★</div>
+                    <p class="text-lg italic text-accent dark:text-gray-300 mb-6 leading-relaxed">
+                        "Joining the Fruits2Fitness challenge was a turning point. Judith helped me understand that my body is a temple. I've lost weight and found peace."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
+                        <div>
+                            <h4 class="font-bold uppercase tracking-tight">Comrade Janet</h4>
+                            <p class="text-xs text-primary font-bold">21-Day Challenge Participant</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-zinc-900 p-8 rounded-3xl border-l-4 border-primary">
+                    <div class="text-yellow-500 mb-4">★★★★★</div>
+                    <p class="text-lg italic text-accent dark:text-gray-300 mb-6 leading-relaxed">
+                        "Professional, empathetic, and truly focused on holistic health. The corporate wellness workshop she ran for our team was exceptional."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
+                        <div>
+                            <h4 class="font-bold uppercase tracking-tight">Comrade David</h4>
+                            <p class="text-xs text-primary font-bold">Client</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 px-6 bg-accent dark:bg-zinc-900 text-white">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20">
+            <div>
+                <h2 class="text-4xl font-bold mb-6">Begin Your <br> Wellness Journey</h2>
+                <p class="text-gray-400 mb-10">Take the first step toward a healthier you today. Book a consultation or visit us.</p>
+                
+                <h4 class="font-bold mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Opening Hours
+                </h4>
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-white/5">
+                            <td class="py-3">Monday — Friday</td>
+                            <td class="py-3 text-right">09:00 AM — 05:00 PM</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-3">Saturday</td>
+                            <td class="py-3 text-right">10:00 AM — 02:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3">Sunday</td>
+                            <td class="py-3 text-right text-red-400 font-bold tracking-widest">CLOSED</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <form class="bg-white p-8 rounded-3xl text-accent space-y-4 shadow-2xl">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold uppercase text-gray-400">Full Name</label>
+                        <input type="text" class="w-full border-b-2 border-gray-100 py-2 focus:border-primary outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold uppercase text-gray-400">Email Address</label>
+                        <input type="email" class="w-full border-b-2 border-gray-100 py-2 focus:border-primary outline-none transition-colors">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-400">Phone Number</label>
+                    <input type="tel" class="w-full border-b-2 border-gray-100 py-2 focus:border-primary outline-none transition-colors">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold uppercase text-gray-400">Preferred Date</label>
+                        <input type="date" class="w-full border-b-2 border-gray-100 py-2 focus:border-primary outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold uppercase text-gray-400">Preferred Time</label>
+                        <input type="time" class="w-full border-b-2 border-gray-100 py-2 focus:border-primary outline-none transition-colors">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-400">Message</label>
+                    <textarea class="w-full border-b-2 border-gray-100 py-2 focus:border-primary outline-none transition-colors" rows="3"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl hover:shadow-green-900/40 transition-all">Book Consultation</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="py-12 px-6 border-t border-gray-100 dark:border-zinc-800">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">LHJ</div>
+                    <span class="font-bold text-xl dark:text-white">LHJ CONSULT</span>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Honoring God through our bodies, minds, and spirits.</p>
+                <div class="flex gap-4">
+                    <a href="www.linkeldn.com/company/lhjconsult-nig/" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all italic font-serif">in</a>
+                    <a href="www.instagram.com/lhjconsultng" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all italic font-serif">ig</a>
+                    <a href="www.youtube.com/@ijudithobieofule" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all italic font-serif">yt</a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-bold mb-6">Quick Links</h4>
+                <ul class="space-y-4 text-sm text-gray-500">
+                    <li><a href="#about" class="hover:text-primary">About Us</a></li>
+                    <li><a href="#services" class="hover:text-primary">Our Services</a></li>
+                    <li><a href="#testimonials" class="hover:text-primary">Success Stories</a></li>
+                    <li><a href="#contact" class="hover:text-primary">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6">Services</h4>
+                <ul class="space-y-4 text-sm text-gray-500">
+                    <li>Holistic Nutrition</li>
+                    <li>Therapeutic Plans</li>
+                    <li>Corporate Wellness</li>
+                    <li>Community Health</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold mb-6">Contact Us</h4>
+                <ul class="space-y-4 text-sm text-gray-500">
+                    <li class="flex items-center gap-2">📧 lhjconsultenquiry@gmail.com</li>
+                    <li class="flex items-center gap-2">📞 +234 705 049 5999</li>
+                    <li class="flex items-center gap-2">📍 Lagos, Nigeria</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto border-t border-gray-100 dark:border-zinc-800 pt-8 text-center text-xs text-gray-400 font-medium">
+            © 2026 LHJ Consult. All Rights Reserved. Nourishing the Temple.
+        </div>
+    </footer>
+
+</body>
+</html>
