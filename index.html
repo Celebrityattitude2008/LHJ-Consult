@@ -407,12 +407,12 @@
             <h2 class="text-4xl font-bold text-center mb-16">Transformative <span class="text-primary">Services</span></h2>
             <div class="grid md:grid-cols-3 gap-8">
                 <template x-for="service in [
-                    { title: 'Holistic Nutrition', desc: 'Personalized plans blending science and spirit.', points: ['Lifestyle audits', 'Custom meal plans', 'Spiritual integration', 'Ongoing support'], price: '₦50,000', duration: '3 months', link: 'holistic-nutrition.html' },
-                    { title: 'Therapeutic Nutrition', desc: 'Addressing specific health conditions through diet.', points: ['Blood sugar balance', 'Hormonal health', 'Disease management', 'Medical coordination'], price: '₦75,000', duration: '6 months', link: 'therapeutic-nutrition.html' },
-                    { title: 'Post-Operative Wellness', desc: 'Specialized care to accelerate your healing journey.', points: ['Nutrient recovery', 'Inflammation reduction', 'Wound healing support', 'Rehabilitation guidance'], price: '₦100,000', duration: 'Recovery period', link: 'post-operative-wellness.html' },
-                    { title: 'Corporate Wellness', desc: 'Boosting workforce health and spiritual morale.', points: ['Workshop sessions', 'Executive coaching', 'Team building', 'Health screenings'], price: '₦200,000', duration: 'Annual program', link: 'corporate-wellness.html' },
-                    { title: 'Community Impact', desc: 'Empowering local communities with health education.', points: ['Public speaking', 'Social initiatives', 'Health campaigns', 'Community workshops'], price: '₦150,000', duration: 'Project-based', link: 'community-impact.html' },
-                    { title: 'Education & Advisory', desc: 'Expert research and guidance for organizations.', points: ['Policy advisory', 'Health research', 'Training programs', 'Consultancy services'], price: '₦300,000', duration: 'Custom', link: 'education-advisory.html' }
+                    { title: 'Holistic Nutrition', desc: 'Personalized lifestyle transformation rooted in nutrition, habits, and whole-person wellness.', points: ['Health & Wellness Package', 'Lifestyle Reset Package', 'Personalized Nutrition Blueprint'], price: '', duration: '', link: 'holistic-nutrition.html' },
+                    { title: 'Therapeutic Nutrition', desc: 'Evidence-based nutrition support for lifestyle-related health conditions.', points: ['Blood Pressure Balance', 'Blood Sugar Balance', 'Hormonal Harmony'], price: '', duration: '', link: 'therapeutic-nutrition.html' },
+                    { title: 'Post-Operative Wellness', desc: 'Non-clinical nutrition and lifestyle support for healing and recovery.', points: ['Nutrient Recovery Protocol', 'Inflammation Reduction Recovery Plan'], price: '', duration: '', link: 'post-operative-wellness.html' },
+                    { title: 'Corporate Wellness', desc: 'Workplace health programs that improve productivity, wellbeing, and performance.', points: ['Workplace Wellness Workshop Series', 'Executive Wellness Coaching'], price: '', duration: '', link: 'corporate-wellness.html' },
+                    { title: 'Community Impact', desc: 'Public health education and social wellness initiatives.', points: ['Health Awareness Speaking Engagements', 'Community Wellness Initiatives'], price: '', duration: '', link: 'community-impact.html' },
+                    { title: 'Education & Advisory', desc: 'Knowledge transfer, research, and strategic health advisory.', points: ['Public Health Advisory Services', 'Health Research & Insight Services'], price: '', duration: '', link: 'education-advisory.html' }
                 ]">
                     <div class="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-2xl hover:-translate-y-2 transition-all group">
                         <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
@@ -427,7 +427,7 @@
                                 </li>
                             </template>
                         </ul>
-                        <div class="mb-6">
+                        <div x-show="service.price" class="mb-6">
                             <div class="text-2xl font-bold text-primary mb-1" x-text="service.price"></div>
                             <div class="text-xs text-gray-500" x-text="service.duration"></div>
                         </div>
@@ -436,6 +436,25 @@
                         </a>
                     </div>
                 </template>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-gradient-to-r from-primary/10 to-secondary/20 dark:from-zinc-900 dark:to-zinc-950">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 bg-yellow-100 border border-yellow-200 text-yellow-800 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
+                <span class="text-yellow-500">⭐</span> Signature Program
+            </div>
+            <h2 class="text-4xl font-bold mb-6">21-Day Fruit2Fitness Challenge</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                21-Day group challenge designed to transform your health through fruit-based nutrition and fitness.
+            </p>
+            <div class="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-zinc-800 max-w-md mx-auto">
+                <div class="text-3xl font-bold text-primary mb-2">₦15,000</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mb-6">per participant</div>
+                <a href="index.html#contact" class="w-full bg-primary text-white px-8 py-4 rounded-full font-bold text-center block hover:bg-opacity-90 transition-all">
+                    Join the Challenge
+                </a>
             </div>
         </div>
     </section>
