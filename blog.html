@@ -42,9 +42,16 @@
                     return;
                 }
 
+                const posts = [];
                 snapshot.forEach((childSnapshot) => {
-                    const blog = childSnapshot.val();
-                    const timestamp = new Date(-blog.timestamp);
+                    posts.push(childSnapshot.val());
+                });
+
+                // Sort newest first
+                posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                posts.forEach((blog) => {
+                    const timestamp = new Date(blog.timestamp || Date.now());
 
                     const imageHtml = blog.imageBase64 ? `<img src="${blog.imageBase64}" alt="Blog image" class="w-full h-44 object-cover rounded-xl mb-4" />` : '';
 
