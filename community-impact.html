@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Community Impact | LHJ Consult</title>
+        <meta name="description" content="Empowering local communities with health education and wellness initiatives.">
+        <meta name="keywords" content="community health, health education, wellness initiatives, Lagos, Nigeria">
+        <meta name="author" content="LHJ Consult">
+        <!-- Open Graph -->
+        <meta property="og:title" content="Community Impact | LHJ Consult">
+        <meta property="og:description" content="Empowering local communities with health education and wellness initiatives.">
+        <meta property="og:image" content="logo.png">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://lhjconsult.com/community-impact.html">
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Community Impact | LHJ Consult">
+        <meta name="twitter:description" content="Empowering local communities with health education and wellness initiatives.">
+        <meta name="twitter:image" content="logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2D5A27',
+                        secondary: '#F4F9F4',
+                        accent: '#1B261B',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="font-sans antialiased text-accent dark:text-gray-100 bg-white dark:bg-zinc-950 transition-colors duration-300">
+
+    <header class="w-full bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800 fixed z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="logo.png" alt="LHJ Consult Logo" class="w-10 h-10 rounded-lg border border-primary" loading="lazy" />
+                    <span class="font-bold text-2xl tracking-tight text-accent dark:text-white">LHJ Consult</span>
+                </a>
+            </div>
+            <nav class="hidden md:flex flex-1 justify-center items-center gap-8 font-medium">
+                <a href="index.html#about" class="hover:text-primary transition-colors">About</a>
+                <a href="index.html#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="index.html#testimonials" class="hover:text-primary transition-colors">Testimonials</a>
+                <a href="index.html#blog" class="hover:text-primary transition-colors">Blog</a>
+                <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
+            </nav>
+            <div class="flex items-center gap-2">
+                <button @click="darkMode = !darkMode" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800">
+                    <template x-if="!darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </template>
+                    <template x-if="darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </template>
+                </button>
+                <a href="index.html#contact" class="bg-primary text-white px-6 py-2.5 rounded-full font-bold shadow-lg hover:bg-opacity-90 transition-all">Book Consultation</a>
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div x-show="mobileMenu" x-cloak class="absolute top-20 right-6 w-56 bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-xl shadow-xl p-6 flex flex-col gap-4 text-lg font-semibold z-[60]" @click.away="mobileMenu = false">
+            <button @click="mobileMenu = false" class="absolute top-4 right-4 text-gray-500">✕</button>
+            <a @click="mobileMenu = false" href="index.html#about" class="hover:text-primary">About</a>
+            <a @click="mobileMenu = false" href="index.html#services" class="hover:text-primary">Services</a>
+            <a @click="mobileMenu = false" href="index.html#testimonials" class="hover:text-primary">Testimonials</a>
+            <a @click="mobileMenu = false" href="index.html#blog" class="hover:text-primary">Blog</a>
+            <a @click="mobileMenu = false" href="index.html#contact" class="hover:text-primary">Contact</a>
+        </div>
+    </header>
+
+    <section class="pt-32 pb-20 px-6 bg-gradient-to-br from-green-50 via-green-100 to-white dark:from-zinc-900 dark:via-zinc-950 dark:to-zinc-950">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 bg-green-100 border border-green-200 text-primary px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
+                <span class="text-orange-500">🌍</span> Community Impact
+            </div>
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 text-accent dark:text-white leading-tight">
+                Health for<br>
+                <span class="text-primary">All Communities</span>
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Empowering local communities through accessible health education, wellness initiatives, and faith-based outreach programs.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="index.html#contact" class="w-full sm:w-auto bg-primary text-white px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-xl shadow-green-900/20">
+                    Partner With Us <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-primary">₦150,000</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Project-based</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16">
+            <div>
+                <h2 class="text-3xl font-bold mb-8">Community Programs</h2>
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Public Speaking Engagements</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Educational talks and seminars on nutrition, wellness, and faith-based health practices for community groups and organizations.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Social Initiatives</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Community health projects including food banks, nutrition education programs, and wellness outreach to underserved populations.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Health Campaigns</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Awareness campaigns on preventive health, chronic disease management, and the importance of holistic wellness in community settings.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Community Workshops</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Hands-on workshops teaching practical nutrition skills, meal preparation, and wellness practices accessible to all community members.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-3xl font-bold mb-8">Program Details</h2>
+                <div class="bg-secondary/50 dark:bg-zinc-900/50 p-8 rounded-2xl">
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span>Duration</span>
+                            <span class="font-bold">3-12 Months</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Community Size</span>
+                            <span class="font-bold">50-500 Participants</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Format</span>
+                            <span class="font-bold">Workshops & Outreach</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Materials</span>
+                            <span class="font-bold">Educational Resources</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Investment</span>
+                            <span class="font-bold text-primary">₦150,000</span>
+                        </div>
+                    </div>
+                    <a href="index.html#contact" class="w-full bg-primary text-white px-8 py-4 rounded-full font-bold text-center block mt-8 hover:bg-opacity-90 transition-all">
+                        Book Your Consultation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-secondary/30 dark:bg-zinc-900/30">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-8">Make a Difference in Your Community</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400 mb-10">
+                Partner with us to bring health education and wellness initiatives to those who need it most.
+            </p>
+            <a href="index.html#contact" class="bg-primary text-white px-8 py-4 rounded-full font-bold hover:bg-opacity-90 transition-all">
+                Start Your Initiative
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-12 px-6 bg-accent dark:bg-zinc-900 text-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <img src="logo.png" alt="LHJ Consult Logo" class="w-10 h-10 rounded-lg border border-white/20" />
+                <span class="font-bold text-2xl">LHJ Consult</span>
+            </div>
+            <p class="text-gray-400 mb-6">Faith-Based Wellness Consultancy</p>
+            <div class="flex justify-center gap-8 text-sm">
+                <a href="index.html#about" class="hover:text-primary transition-colors">About</a>
+                <a href="index.html#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
+            </div>
+            <div class="mt-8 pt-8 border-t border-white/10 text-xs text-gray-500">
+                © 2024 LHJ Consult. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

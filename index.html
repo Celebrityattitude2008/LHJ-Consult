@@ -41,6 +41,54 @@
         </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
+            authDomain: "lhz-consult.firebaseapp.com",
+            projectId: "lhz-consult",
+            storageBucket: "lhz-consult.firebasestorage.app",
+            messagingSenderId: "920864160501",
+            appId: "1:920864160501:web:398c02e121aeae47fca3bc",
+            measurementId: "G-078KJE43DS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Load blogs
+        async function loadBlogs() {
+            const blogPostsDiv = document.getElementById('blog-posts');
+            try {
+                const q = query(collection(db, 'blogs'), orderBy('timestamp', 'desc'));
+                const querySnapshot = await getDocs(q);
+                blogPostsDiv.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const blog = doc.data();
+                    const blogElement = document.createElement('div');
+                    blogElement.className = 'bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-xl transition-all';
+                    const timestamp = blog.timestamp?.toDate ? blog.timestamp.toDate() : (blog.timestamp ? new Date(blog.timestamp) : new Date());
+                const imageHtml = blog.imageBase64 ? `<img src="${blog.imageBase64}" alt="Blog image" class="w-full h-44 object-cover rounded-xl mb-4" />` : '';
+                blogElement.innerHTML = `
+                        ${imageHtml}
+                        <h3 class="text-xl font-bold mb-3">${blog.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">${blog.content.substring(0, 150)}...</p>
+                        <div class="text-xs text-gray-500">${timestamp.toLocaleDateString()}</div>
+                    `;
+                    blogPostsDiv.appendChild(blogElement);
+                });
+            } catch (error) {
+                console.error('Error loading blogs:', error);
+                blogPostsDiv.innerHTML = '<p class="text-center text-gray-500">Unable to load blog posts.</p>';
+            }
+        }
+
+        // Load blogs on page load
+        document.addEventListener('DOMContentLoaded', loadBlogs);
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -76,6 +124,7 @@
                 <a href="#about" class="hover:text-primary transition-colors">About</a>
                 <a href="#services" class="hover:text-primary transition-colors">Services</a>
                 <a href="#testimonials" class="hover:text-primary transition-colors">Testimonials</a>
+                <a href="blog.html" class="hover:text-primary transition-colors">Blog</a>
                 <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
             </nav>
             <div class="flex items-center gap-2">
@@ -98,6 +147,7 @@
             <a @click="mobileMenu = false" href="#about" class="hover:text-primary">About</a>
             <a @click="mobileMenu = false" href="#services" class="hover:text-primary">Services</a>
             <a @click="mobileMenu = false" href="#testimonials" class="hover:text-primary">Testimonials</a>
+            <a @click="mobileMenu = false" href="blog.html" class="hover:text-primary">Blog</a>
             <a @click="mobileMenu = false" href="#contact" class="hover:text-primary">Contact</a>
         </div>
     </header>
@@ -357,12 +407,12 @@
             <h2 class="text-4xl font-bold text-center mb-16">Transformative <span class="text-primary">Services</span></h2>
             <div class="grid md:grid-cols-3 gap-8">
                 <template x-for="service in [
-                    { title: 'Holistic Nutrition', desc: 'Personalized plans blending science and spirit.', points: ['Lifestyle audits', 'Custom meal plans'] },
-                    { title: 'Therapeutic Nutrition', desc: 'Addressing specific health conditions through diet.', points: ['Blood sugar balance', 'Hormonal health'] },
-                    { title: 'Post-Operative Wellness', desc: 'Specialized care to accelerate your healing journey.', points: ['Nutrient recovery', 'Inflammation reduction'] },
-                    { title: 'Corporate Wellness', desc: 'Boosting workforce health and spiritual morale.', points: ['Workshop sessions', 'Executive coaching'] },
-                    { title: 'Community Impact', desc: 'Empowering local communities with health education.', points: ['Public speaking', 'Social initiatives'] },
-                    { title: 'Education & Advisory', desc: 'Expert research and guidance for organizations.', points: ['Policy advisory', 'Health research'] }
+                    { title: 'Holistic Nutrition', desc: 'Personalized plans blending science and spirit.', points: ['Lifestyle audits', 'Custom meal plans', 'Spiritual integration', 'Ongoing support'], price: '₦50,000', duration: '3 months', link: 'holistic-nutrition.html' },
+                    { title: 'Therapeutic Nutrition', desc: 'Addressing specific health conditions through diet.', points: ['Blood sugar balance', 'Hormonal health', 'Disease management', 'Medical coordination'], price: '₦75,000', duration: '6 months', link: 'therapeutic-nutrition.html' },
+                    { title: 'Post-Operative Wellness', desc: 'Specialized care to accelerate your healing journey.', points: ['Nutrient recovery', 'Inflammation reduction', 'Wound healing support', 'Rehabilitation guidance'], price: '₦100,000', duration: 'Recovery period', link: 'post-operative-wellness.html' },
+                    { title: 'Corporate Wellness', desc: 'Boosting workforce health and spiritual morale.', points: ['Workshop sessions', 'Executive coaching', 'Team building', 'Health screenings'], price: '₦200,000', duration: 'Annual program', link: 'corporate-wellness.html' },
+                    { title: 'Community Impact', desc: 'Empowering local communities with health education.', points: ['Public speaking', 'Social initiatives', 'Health campaigns', 'Community workshops'], price: '₦150,000', duration: 'Project-based', link: 'community-impact.html' },
+                    { title: 'Education & Advisory', desc: 'Expert research and guidance for organizations.', points: ['Policy advisory', 'Health research', 'Training programs', 'Consultancy services'], price: '₦300,000', duration: 'Custom', link: 'education-advisory.html' }
                 ]">
                     <div class="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-2xl hover:-translate-y-2 transition-all group">
                         <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
@@ -370,16 +420,20 @@
                         </div>
                         <h3 class="text-xl font-bold mb-3" x-text="service.title"></h3>
                         <p class="text-gray-500 dark:text-gray-400 text-sm mb-6" x-text="service.desc"></p>
-                        <ul class="mb-8 space-y-2 text-sm font-medium">
+                        <ul class="mb-6 space-y-2 text-sm font-medium">
                             <template x-for="point in service.points">
                                 <li class="flex items-center gap-2">
                                     <span class="text-primary">✓</span> <span x-text="point"></span>
                                 </li>
                             </template>
                         </ul>
-                        <button class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                            Learn More <span>→</span>
-                        </button>
+                        <div class="mb-6">
+                            <div class="text-2xl font-bold text-primary mb-1" x-text="service.price"></div>
+                            <div class="text-xs text-gray-500" x-text="service.duration"></div>
+                        </div>
+                        <a :href="service.link" class="inline-block bg-primary text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-opacity-90 transition-all">
+                            Learn More →
+                        </a>
                     </div>
                 </template>
             </div>
@@ -393,7 +447,7 @@
                 <div class="bg-gray-50 dark:bg-zinc-900 p-8 rounded-3xl border-l-4 border-primary">
                     <div class="text-yellow-500 mb-4">★★★★★</div>
                     <p class="text-lg italic text-accent dark:text-gray-300 mb-6 leading-relaxed">
-                        "Joining the Fruits2Fitness challenge was a turning point. Judith helped me understand that my body is a temple. I've lost weight and found peace."
+                        "Joining the Fruits2Fitness challenge was a turning point. Coach J helped me understand that my body is a temple. I've lost weight and found peace."
                     </p>
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
@@ -438,7 +492,7 @@
                         </tr>
                         <tr class="border-b border-white/5">
                             <td class="py-3">Saturday</td>
-                            <td class="py-3 text-right">10:00 AM — 02:00 PM</td>
+                            <td class="py-3 text-right">10:00 AM — 03:00 PM</td>
                         </tr>
                         <tr>
                             <td class="py-3">Sunday</td>
@@ -491,9 +545,21 @@
                 </div>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Honoring God through our bodies, minds, and spirits.</p>
                 <div class="flex gap-4">
-                    <a href="www.linkeldn.com/company/lhjconsult-nig/" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all italic font-serif">in</a>
-                    <a href="www.instagram.com/lhjconsultng" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all italic font-serif">ig</a>
-                    <a href="www.youtube.com/@ijudithobieofule" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all italic font-serif">yt</a>
+                    <a href="https://www.linkedin.com/company/lhj-consult-nig/" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/lhjconsultng" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.017 0C8.396 0 7.966.017 6.665.072 5.348.126 4.426.278 3.65.53c-.825.27-1.527.637-2.23 1.34S.278 3.425.03 4.25C-.222 5.026-.374 5.948-.428 7.265-.483 8.566-.5 8.996-.5 12.617s.017 4.051.072 5.352c.054 1.317.206 2.239.458 3.015.252.776.619 1.478 1.322 2.181s1.455.637 2.28 1.34c.776.252 1.698.404 3.015.458 1.301.055 1.731.072 5.352.072s4.051-.017 5.352-.072c1.317-.054 2.239-.206 3.015-.458.825-.27 1.527-.637 2.23-1.34s1.055-1.455 1.34-2.28c.252-.776.404-1.698.458-3.015.055-1.301.072-1.731.072-5.352s-.017-4.051-.072-5.352c-.054-1.317-.206-2.239-.458-3.015-.27-.825-.637-1.527-1.34-2.23S20.575.278 19.75.03C18.974-.222 18.052-.374 16.735-.428 15.434-.483 15.004-.5 11.383-.5S7.332-.483 6.031-.428C4.714-.374 3.792-.222 3.016.03c-.776.252-1.478.404-2.181.637S.278 1.455.03 2.28C-.222 3.056-.374 3.978-.428 5.295-.483 6.596-.5 7.026-.5 10.647s.017 4.051.072 5.352c.054 1.317.206 2.239.458 3.015.252.776.619 1.478 1.322 2.181s1.455.637 2.28 1.34c.776.252 1.698.404 3.015.458 1.301.055 1.731.072 5.352.072s4.051-.017 5.352-.072c1.317-.054 2.239-.206 3.015-.458.825-.27 1.527-.637 2.23-1.34s.637-1.455 1.34-2.28c.252-.776.404-1.698.458-3.015.055-1.301.072-1.731.072-5.352s-.017-4.051-.072-5.352c-.054-1.317-.206-2.239-.458-3.015-.27-.825-.637-1.527-1.34-2.23S20.575.278 19.75.03C18.974-.222 18.052-.374 16.735-.428 15.434-.483 15.004-.5 11.383-.5S7.332-.483 6.031-.428C4.714-.374 3.792-.222 3.016.03c-.776.252-1.478.404-2.181.637S.278 1.455.03 2.28C-.222 3.056-.374 3.978-.428 5.295-.483 6.596-.5 7.026-.5 10.647s.017 4.051.072 5.352c.054 1.317.206 2.239.458 3.015.252.776.619 1.478 1.322 2.181s1.455.637 2.28 1.34c.776.252 1.698.404 3.015.458 1.301.055 1.731.072 5.352.072s4.051-.017 5.352-.072c1.317-.054 2.239-.206 3.015-.458.825-.27 1.527-.637 2.23-1.34s.637-1.455 1.34-2.28c.252-.776.404-1.698.458-3.015.055-1.301.072-1.731.072-5.352s-.017-4.051-.072-5.352c-.054-1.317-.206-2.239-.458-3.015-.27-.825-.637-1.527-1.34-2.23S20.575.278 19.75.03C18.974-.222 18.052-.374 16.735-.428 15.434-.483 15.004-.5 11.383-.5zM12.017 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a3.999 3.999 0 110-7.998 3.999 3.999 0 010 7.998zm6.406-11.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.youtube.com/@IJudithObiefule" class="w-8 h-8 bg-gray-100 dark:bg-zinc-800 rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
             
@@ -503,6 +569,7 @@
                     <li><a href="#about" class="hover:text-primary">About Us</a></li>
                     <li><a href="#services" class="hover:text-primary">Our Services</a></li>
                     <li><a href="#testimonials" class="hover:text-primary">Success Stories</a></li>
+                    <li><a href="blog.html" class="hover:text-primary">Blog</a></li>
                     <li><a href="#contact" class="hover:text-primary">Contact Us</a></li>
                 </ul>
             </div>
@@ -531,5 +598,3 @@
         </div>
     </footer>
 
-</body>
-</html>

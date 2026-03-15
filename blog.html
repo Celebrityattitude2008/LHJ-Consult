@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | LHJ Consult</title>
+    <meta name="description" content="Read the latest wellness insights, tips, and stories from LHJ Consult.">
+    <meta name="keywords" content="wellness blog, nutrition tips, faith-based health, LHJ Consult">
+    <meta name="author" content="LHJ Consult">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
+            authDomain: "lhz-consult.firebaseapp.com",
+            projectId: "lhz-consult",
+            storageBucket: "lhz-consult.firebasestorage.app",
+            messagingSenderId: "920864160501",
+            appId: "1:920864160501:web:398c02e121aeae47fca3bc",
+            measurementId: "G-078KJE43DS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadBlogs() {
+            const blogPostsDiv = document.getElementById('blog-posts');
+            try {
+                const q = query(collection(db, 'blogs'), orderBy('timestamp', 'desc'));
+                const querySnapshot = await getDocs(q);
+                blogPostsDiv.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    blogPostsDiv.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">No posts yet. Check back soon!</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const blog = doc.data();
+                    const timestamp = blog.timestamp?.toDate ? blog.timestamp.toDate() : (blog.timestamp ? new Date(blog.timestamp) : new Date());
+
+                    const imageHtml = blog.imageBase64 ? `<img src="${blog.imageBase64}" alt="Blog image" class="w-full h-44 object-cover rounded-xl mb-4" />` : '';
+
+                    const blogElement = document.createElement('div');
+                    blogElement.className = 'bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-xl transition-all';
+                    blogElement.innerHTML = `
+                        ${imageHtml}
+                        <h3 class="text-2xl font-bold mb-3">${blog.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">${blog.content.substring(0, 250)}...</p>
+                        <div class="text-xs text-gray-500">${timestamp.toLocaleDateString()}</div>
+                    `;
+                    blogPostsDiv.appendChild(blogElement);
+                });
+            } catch (error) {
+                console.error('Error loading blogs:', error);
+                blogPostsDiv.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Unable to load blog posts.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadBlogs);
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2D5A27',
+                        secondary: '#F4F9F4',
+                        accent: '#1B261B',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="font-sans antialiased text-accent dark:text-gray-100 bg-white dark:bg-zinc-950 transition-colors duration-300">
+
+    <header class="w-full bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800 fixed z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="logo.png" alt="LHJ Consult Logo" class="w-10 h-10 rounded-lg border border-primary" loading="lazy" />
+                    <span class="font-bold text-2xl tracking-tight text-accent dark:text-white">LHJ Consult</span>
+                </a>
+            </div>
+            <nav class="hidden md:flex flex-1 justify-center items-center gap-8 font-medium">
+                <a href="index.html#about" class="hover:text-primary transition-colors">About</a>
+                <a href="index.html#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="index.html#testimonials" class="hover:text-primary transition-colors">Testimonials</a>
+                <a href="blog.html" class="hover:text-primary transition-colors">Blog</a>
+                <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
+            </nav>
+            <div class="flex items-center gap-2">
+                <button @click="darkMode = !darkMode" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800">
+                    <template x-if="!darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </template>
+                    <template x-if="darkMode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </template>
+                </button>
+                <a href="index.html#contact" class="bg-primary text-white px-6 py-2.5 rounded-full font-bold shadow-lg hover:bg-opacity-90 transition-all">Book Consultation</a>
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div x-show="mobileMenu" x-cloak class="absolute top-20 right-6 w-56 bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-xl shadow-xl p-6 flex flex-col gap-4 text-lg font-semibold z-[60]" @click.away="mobileMenu = false">
+            <button @click="mobileMenu = false" class="absolute top-4 right-4 text-gray-500">✕</button>
+            <a @click="mobileMenu = false" href="index.html#about" class="hover:text-primary">About</a>
+            <a @click="mobileMenu = false" href="index.html#services" class="hover:text-primary">Services</a>
+            <a @click="mobileMenu = false" href="index.html#testimonials" class="hover:text-primary">Testimonials</a>
+            <a @click="mobileMenu = false" href="blog.html" class="hover:text-primary">Blog</a>
+            <a @click="mobileMenu = false" href="index.html#contact" class="hover:text-primary">Contact</a>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h1 class="text-5xl md:text-6xl font-bold mb-4">LHJ Consult <span class="text-primary">Blog</span></h1>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Insights, stories, and wellness guidance to support your journey.</p>
+            </div>
+
+            <div id="blog-posts" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"></div>
+        </div>
+    </main>
+
+    <footer class="py-12 px-6 bg-accent dark:bg-zinc-900 text-white">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <img src="logo.png" alt="LHJ Consult Logo" class="w-10 h-10 rounded-lg border border-white/20" />
+                <span class="font-bold text-2xl">LHJ Consult</span>
+            </div>
+            <p class="text-gray-400 mb-6">Faith-Based Wellness Consultancy</p>
+            <div class="flex justify-center gap-8 text-sm">
+                <a href="index.html#about" class="hover:text-primary transition-colors">About</a>
+                <a href="index.html#services" class="hover:text-primary transition-colors">Services</a>
+                <a href="blog.html" class="hover:text-primary transition-colors">Blog</a>
+                <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
+            </div>
+            <div class="mt-8 pt-8 border-t border-white/10 text-xs text-gray-500">
+                © 2026 LHJ Consult. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - LHJ Consult Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
+            authDomain: "lhz-consult.firebaseapp.com",
+            projectId: "lhz-consult",
+            storageBucket: "lhz-consult.firebasestorage.app",
+            messagingSenderId: "920864160501",
+            appId: "1:920864160501:web:398c02e121aeae47fca3bc",
+            measurementId: "G-078KJE43DS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        let currentImageBase64 = null;
+
+        // Auth state observer
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const loginDiv = document.getElementById('login');
+            const adminDiv = document.getElementById('admin');
+            const userInfo = document.getElementById('user-info');
+
+            if (user && user.email === 'admin@lhjconsult.com') {
+                loginDiv.style.display = 'none';
+                adminDiv.style.display = 'block';
+                userInfo.textContent = `Logged in as: ${user.email}`;
+            } else {
+                loginDiv.style.display = 'block';
+                adminDiv.style.display = 'none';
+                if (user) {
+                    // Wrong email, sign out
+                    signOut(auth);
+                    alert('Access denied. Only admin@lhjconsult.com can access this panel.');
+                }
+            }
+        });
+
+        // Sign in function
+        window.signIn = async function() {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                // Check email after sign in
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Sign in failed: ' + error.message);
+            }
+        };
+
+        // Sign out function
+        window.signOutUser = async function() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error('Sign out error:', error);
+            }
+        };
+
+        // Handle image selection and convert to base64
+        window.handleImageSelect = function(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                currentImageBase64 = null;
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                currentImageBase64 = reader.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        // Submit blog post
+        window.submitBlog = async function(event) {
+            event.preventDefault();
+            if (!currentUser) return;
+
+            const title = document.getElementById('blog-title').value.trim();
+            const content = document.getElementById('blog-content').value.trim();
+
+            if (!title || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, 'blogs'), {
+                    title,
+                    content,
+                    imageBase64: currentImageBase64 || null,
+                    timestamp: serverTimestamp(),
+                    author: currentUser.email
+                });
+
+                alert('Blog post published successfully!');
+                document.getElementById('blog-form').reset();
+                currentImageBase64 = null;
+            } catch (error) {
+                console.error('Error adding blog:', error);
+                alert('Error publishing blog: ' + error.message);
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .transition-all { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white dark:bg-zinc-950 text-accent dark:text-gray-100">
+    <div class="min-h-screen flex items-center justify-center px-6">
+        <div class="max-w-2xl w-full">
+            <!-- Login Section -->
+            <div id="login" class="text-center">
+                <h1 class="text-4xl font-bold mb-4">LHJ Consult <span class="text-primary">Admin Panel</span></h1>
+                <p class="text-gray-600 dark:text-gray-400 mb-8">Sign in to manage blog posts.</p>
+                <button onclick="signIn()" class="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2 mx-auto">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+            </div>
+
+            <!-- Admin Section -->
+            <div id="admin" style="display: none;">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold mb-4">LHJ Consult <span class="text-primary">Blog Admin</span></h1>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Add new blog posts to share with your community.</p>
+                    <div id="user-info" class="text-sm text-primary font-bold"></div>
+                </div>
+                <form id="blog-form" onsubmit="submitBlog(event)" class="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-gray-100 dark:border-zinc-800 shadow-xl">
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">Blog Title</label>
+                        <input type="text" id="blog-title" class="w-full border-b-2 border-gray-200 dark:border-zinc-700 py-2 focus:border-primary outline-none transition-colors bg-transparent" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">Blog Content</label>
+                        <textarea id="blog-content" rows="8" class="w-full border-b-2 border-gray-200 dark:border-zinc-700 py-2 focus:border-primary outline-none transition-colors bg-transparent resize-vertical" required></textarea>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">Featured Image (optional)</label>
+                        <input type="file" id="blog-image" accept="image/*" onchange="handleImageSelect(event)" class="w-full" />
+                        <p class="text-xs text-gray-500 mt-2">Images are stored as base64 in the database and displayed automatically.</p>
+                    </div>
+                    <button type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all">Publish Blog Post</button>
+                </form>
+                <div class="mt-8 text-center space-y-4">
+                    <button onclick="signOutUser()" class="text-red-500 hover:underline">Sign Out</button>
+                    <br>
+                    <a href="index.html" class="text-primary hover:underline">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\paula\Documents\project consult\admin.html
