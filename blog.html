@@ -14,7 +14,7 @@
     <!-- Firebase -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+        import { getDatabase, ref, onValue, orderByChild, query } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
@@ -27,23 +27,24 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
-        async function loadBlogs() {
+        function loadBlogs() {
             const blogPostsDiv = document.getElementById('blog-posts');
-            try {
-                const q = query(collection(db, 'blogs'), orderBy('timestamp', 'desc'));
-                const querySnapshot = await getDocs(q);
+            const blogsRef = ref(db, 'blogs');
+            const orderedQuery = query(blogsRef, orderByChild('timestamp'));
+
+            onValue(orderedQuery, (snapshot) => {
                 blogPostsDiv.innerHTML = '';
 
-                if (querySnapshot.empty) {
+                if (!snapshot.exists()) {
                     blogPostsDiv.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">No posts yet. Check back soon!</p>';
                     return;
                 }
 
-                querySnapshot.forEach((doc) => {
-                    const blog = doc.data();
-                    const timestamp = blog.timestamp?.toDate ? blog.timestamp.toDate() : (blog.timestamp ? new Date(blog.timestamp) : new Date());
+                snapshot.forEach((childSnapshot) => {
+                    const blog = childSnapshot.val();
+                    const timestamp = new Date(-blog.timestamp);
 
                     const imageHtml = blog.imageBase64 ? `<img src="${blog.imageBase64}" alt="Blog image" class="w-full h-44 object-cover rounded-xl mb-4" />` : '';
 
@@ -57,10 +58,10 @@
                     `;
                     blogPostsDiv.appendChild(blogElement);
                 });
-            } catch (error) {
+            }, (error) => {
                 console.error('Error loading blogs:', error);
                 blogPostsDiv.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Unable to load blog posts.</p>';
-            }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', loadBlogs);
