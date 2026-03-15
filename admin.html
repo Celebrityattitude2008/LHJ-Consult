@@ -9,7 +9,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
-        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+        import { getDatabase, ref, push, set } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
@@ -23,7 +23,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
@@ -100,11 +100,12 @@
             }
 
             try {
-                await addDoc(collection(db, 'blogs'), {
+                const newPostRef = push(ref(db, 'blogs'));
+                await set(newPostRef, {
                     title,
                     content,
                     imageBase64: currentImageBase64 || null,
-                    timestamp: serverTimestamp(),
+                    timestamp: Date.now(),
                     author: currentUser.email
                 });
 
