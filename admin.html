@@ -9,7 +9,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
-        import { getDatabase, ref, push, set } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+        import { getDatabase, ref, push, set, onValue, remove, orderByChild, query } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
@@ -40,6 +40,7 @@
                 loginDiv.style.display = 'none';
                 adminDiv.style.display = 'block';
                 userInfo.textContent = `Logged in as: ${user.email}`;
+                loadPosts();
             } else {
                 loginDiv.style.display = 'block';
                 adminDiv.style.display = 'none';
@@ -117,6 +118,60 @@
                 alert('Error publishing blog: ' + error.message);
             }
         };
+
+        // Load and display existing posts for management
+        function loadPosts() {
+            const postsContainer = document.getElementById('posts-container');
+            const blogsRef = ref(db, 'blogs');
+            const orderedQuery = query(blogsRef, orderByChild('timestamp'));
+
+            onValue(orderedQuery, (snapshot) => {
+                postsContainer.innerHTML = '';
+
+                if (!snapshot.exists()) {
+                    postsContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">No posts yet.</p>';
+                    return;
+                }
+
+                const posts = [];
+                snapshot.forEach((childSnapshot) => {
+                    posts.push({ key: childSnapshot.key, ...childSnapshot.val() });
+                });
+
+                posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                posts.forEach((post) => {
+                    const timestamp = new Date(post.timestamp || Date.now());
+                    const postElement = document.createElement('div');
+                    postElement.className = 'bg-gray-50 dark:bg-zinc-800 p-4 rounded-xl mb-4';
+
+                    postElement.innerHTML = `
+                        <h3 class="font-bold text-lg mb-2">${post.title}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Posted on ${timestamp.toLocaleDateString()}</p>
+                        <p class="text-sm mb-4 line-clamp-2">${post.content.substring(0, 100)}...</p>
+                        <button onclick="deletePost('${post.key}')" class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600">Delete Post</button>
+                    `;
+
+                    postsContainer.appendChild(postElement);
+                });
+            }, (error) => {
+                console.error('Error loading posts:', error);
+                postsContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Unable to load posts.</p>';
+            });
+        }
+
+        // Delete a post
+        window.deletePost = function(postKey) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+            remove(ref(db, 'blogs/' + postKey))
+                .then(() => {
+                    alert('Post deleted successfully.');
+                })
+                .catch((err) => {
+                    console.error('Delete error:', err);
+                    alert('Unable to delete post.');
+                });
+        };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -165,6 +220,15 @@
                     </div>
                     <button type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all">Publish Blog Post</button>
                 </form>
+
+                <!-- Manage Posts Section -->
+                <div class="mt-12">
+                    <h2 class="text-2xl font-bold mb-6 text-center">Manage Existing Posts</h2>
+                    <div id="posts-container" class="space-y-4">
+                        <!-- Posts will be loaded here -->
+                    </div>
+                </div>
+
                 <div class="mt-8 text-center space-y-4">
                     <button onclick="signOutUser()" class="text-red-500 hover:underline">Sign Out</button>
                     <br>

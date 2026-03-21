@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog | LHJ Consult</title>
-    <meta name="description" content="Read the latest wellness insights, tips, and stories from LHJ Consult.">
+    <title>Blog Post | LHJ Consult</title>
+    <meta name="description" content="Read the full wellness insight from LHJ Consult.">
     <meta name="keywords" content="wellness blog, nutrition tips, faith-based health, LHJ Consult">
     <meta name="author" content="LHJ Consult">
 
@@ -13,7 +13,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-        import { getDatabase, ref, onValue, orderByChild, query } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+        import { getDatabase, ref, get, child } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
@@ -28,56 +28,42 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Store posts globally so Alpine can access them
-        window.allPosts = [];
+        function loadPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
 
-        function loadBlogs() {
-            const blogPostsDiv = document.getElementById('blog-posts');
-            const blogsRef = ref(db, 'blogs');
-            const orderedQuery = query(blogsRef, orderByChild('timestamp'));
+            if (!postId) {
+                document.getElementById('post-content').innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Post not found.</p>';
+                return;
+            }
 
-            onValue(orderedQuery, (snapshot) => {
-                blogPostsDiv.innerHTML = '';
+            const postRef = ref(db, 'blogs/' + postId);
+            get(child(ref(db), 'blogs/' + postId)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const post = snapshot.val();
+                    const timestamp = new Date(post.timestamp || Date.now());
+                    const imageHtml = post.imageBase64 ? `<img src="${post.imageBase64}" alt="Blog image" class="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />` : '';
 
-                if (!snapshot.exists()) {
-                    blogPostsDiv.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">No posts yet. Check back soon!</p>';
-                    return;
-                }
-
-                const posts = [];
-                snapshot.forEach((childSnapshot) => {
-                    posts.push({ key: childSnapshot.key, ...childSnapshot.val() });
-                });
-
-                posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                window.allPosts = posts; // Update global store
-
-                posts.forEach((blog, index) => {
-                    const timestamp = new Date(blog.timestamp || Date.now());
-                    const imageHtml = blog.imageBase64 ? `<img src="${blog.imageBase64}" alt="Blog image" class="w-full h-44 object-cover rounded-xl mb-4" />` : '';
-
-                    const blogElement = document.createElement('div');
-                    blogElement.className = 'bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-xl transition-all group relative';
-
-                    blogElement.innerHTML = `
+                    document.getElementById('post-content').innerHTML = `
                         ${imageHtml}
-                        <h3 class="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">${blog.title}</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-6 line-clamp-3">${blog.content.substring(0, 180)}...</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-500">Posted on ${timestamp.toLocaleDateString()}</span>
-                            <a href="post.html?id=${blog.key}" class="text-primary font-semibold text-sm hover:underline">Read More →</a>
+                        <div class="mb-4">
+                            <span class="text-primary font-bold text-sm uppercase tracking-widest">Wellness Insight</span>
+                            <h1 class="text-3xl md:text-4xl font-bold mt-2">${post.title}</h1>
+                            <p class="text-gray-500 text-sm mt-2">Posted on ${timestamp.toLocaleString()}</p>
                         </div>
+                        <hr class="border-gray-100 dark:border-zinc-800 my-6">
+                        <div class="text-gray-700 dark:text-gray-300 leading-relaxed text-lg prose-text">${post.content}</div>
                     `;
-
-                    blogPostsDiv.appendChild(blogElement);
-                });
-            }, (error) => {
-                console.error('Error loading blogs:', error);
-                blogPostsDiv.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Unable to load blog posts.</p>';
+                } else {
+                    document.getElementById('post-content').innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Post not found.</p>';
+                }
+            }).catch((error) => {
+                console.error('Error loading post:', error);
+                document.getElementById('post-content').innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400">Unable to load post.</p>';
             });
         }
 
-        document.addEventListener('DOMContentLoaded', loadBlogs);
+        document.addEventListener('DOMContentLoaded', loadPost);
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -101,7 +87,6 @@
     <style>
         [x-cloak] { display: none !important; }
         .transition-all { transition: all 0.3s ease; }
-        /* Preserves line breaks in blog content */
         .prose-text { white-space: pre-wrap; }
     </style>
 </head>
@@ -119,7 +104,7 @@
                 <a href="index.html#about" class="hover:text-primary transition-colors">About</a>
                 <a href="index.html#services" class="hover:text-primary transition-colors">Services</a>
                 <a href="index.html#testimonials" class="hover:text-primary transition-colors">Testimonials</a>
-                <a href="blog.html" class="hover:text-primary transition-colors underline decoration-2 underline-offset-8">Blog</a>
+                <a href="blog.html" class="hover:text-primary transition-colors">Blog</a>
                 <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
             </nav>
             <div class="flex items-center gap-2">
@@ -140,14 +125,13 @@
     </header>
 
     <main class="pt-32 pb-20 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h1 class="text-5xl md:text-6xl font-bold mb-4">LHJ Consult <span class="text-primary">Blog</span></h1>
-                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Insights, stories, and wellness guidance to support your journey.</p>
+        <div class="max-w-4xl mx-auto">
+            <div id="post-content" class="bg-white dark:bg-zinc-900 p-6 md:p-10 rounded-3xl shadow-xl">
+                <!-- Post content will be loaded here -->
             </div>
-
-            <div id="blog-posts" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                </div>
+            <div class="mt-8 text-center">
+                <a href="blog.html" class="text-primary font-semibold hover:underline">← Back to Blog</a>
+            </div>
         </div>
     </main>
 
