@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: false, mobileMenu: false }" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="{ darkMode: false, mobileMenu: false, selectedPost: null }" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Firebase -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
-        import { getDatabase, ref, onValue, orderByChild, query } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+        import { getDatabase, ref, onValue, orderByChild, query, remove } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYy-W4skFlrjKEx3ylwsp7ZmkIewtBPTc",
@@ -28,6 +27,9 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+
+        // Store posts globally so Alpine can access them
+        window.allPosts = [];
 
         function loadBlogs() {
             const blogPostsDiv = document.getElementById('blog-posts');
@@ -44,25 +46,41 @@
 
                 const posts = [];
                 snapshot.forEach((childSnapshot) => {
-                    posts.push(childSnapshot.val());
+                    posts.push({ key: childSnapshot.key, ...childSnapshot.val() });
                 });
 
-                // Sort newest first
+                const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
                 posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                window.allPosts = posts; // Update global store
 
-                posts.forEach((blog) => {
+                posts.forEach((blog, index) => {
                     const timestamp = new Date(blog.timestamp || Date.now());
-
                     const imageHtml = blog.imageBase64 ? `<img src="${blog.imageBase64}" alt="Blog image" class="w-full h-44 object-cover rounded-xl mb-4" />` : '';
 
                     const blogElement = document.createElement('div');
-                    blogElement.className = 'bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-xl transition-all';
+                    blogElement.className = 'bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-gray-100 dark:border-zinc-800 hover:shadow-xl transition-all cursor-pointer group relative';
+
+                    const deleteButton = isAdmin ? `<button class="absolute top-4 right-4 z-10 bg-red-500 text-white px-3 py-1 rounded-full text-xs hover:bg-red-600" onclick="event.stopPropagation(); deletePost('${blog.key}')">Delete</button>` : '';
+
                     blogElement.innerHTML = `
+                        ${deleteButton}
                         ${imageHtml}
-                        <h3 class="text-2xl font-bold mb-3">${blog.title}</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-6">${blog.content.substring(0, 250)}...</p>
-                        <div class="text-xs text-gray-500">Posted on ${timestamp.toLocaleString()}</div>
+                        <h3 class="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">${blog.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6 line-clamp-3">${blog.content.substring(0, 180)}...</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">Posted on ${timestamp.toLocaleDateString()}</span>
+                            <span class="text-primary font-semibold text-sm">Read More →</span>
+                        </div>
                     `;
+
+                    blogElement.addEventListener('click', () => {
+                        const htmlRoot = document.querySelector('html');
+                        if (htmlRoot && htmlRoot.__x) {
+                            htmlRoot.__x.$data.selectedPost = blog;
+                        } else {
+                            window.selectedPost = blog;
+                        }
+                    });
                     blogPostsDiv.appendChild(blogElement);
                 });
             }, (error) => {
@@ -72,6 +90,18 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadBlogs);
+
+        function deletePost(postKey) {
+            if (!confirm('Confirm delete this post?')) return;
+            remove(ref(db, 'blogs/' + postKey))
+                .then(() => {
+                    alert('Post deleted successfully.');
+                })
+                .catch((err) => {
+                    console.error('Delete error:', err);
+                    alert('Unable to delete post.');
+                });
+        }
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -95,6 +125,8 @@
     <style>
         [x-cloak] { display: none !important; }
         .transition-all { transition: all 0.3s ease; }
+        /* Preserves line breaks in blog content */
+        .prose-text { white-space: pre-wrap; }
     </style>
 </head>
 <body class="font-sans antialiased text-accent dark:text-gray-100 bg-white dark:bg-zinc-950 transition-colors duration-300">
@@ -111,7 +143,7 @@
                 <a href="index.html#about" class="hover:text-primary transition-colors">About</a>
                 <a href="index.html#services" class="hover:text-primary transition-colors">Services</a>
                 <a href="index.html#testimonials" class="hover:text-primary transition-colors">Testimonials</a>
-                <a href="blog.html" class="hover:text-primary transition-colors">Blog</a>
+                <a href="blog.html" class="hover:text-primary transition-colors underline decoration-2 underline-offset-8">Blog</a>
                 <a href="index.html#contact" class="hover:text-primary transition-colors">Contact</a>
             </nav>
             <div class="flex items-center gap-2">
@@ -129,14 +161,6 @@
                 </button>
             </div>
         </div>
-        <div x-show="mobileMenu" x-cloak class="absolute top-20 right-6 w-56 bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-xl shadow-xl p-6 flex flex-col gap-4 text-lg font-semibold z-[60]" @click.away="mobileMenu = false">
-            <button @click="mobileMenu = false" class="absolute top-4 right-4 text-gray-500">✕</button>
-            <a @click="mobileMenu = false" href="index.html#about" class="hover:text-primary">About</a>
-            <a @click="mobileMenu = false" href="index.html#services" class="hover:text-primary">Services</a>
-            <a @click="mobileMenu = false" href="index.html#testimonials" class="hover:text-primary">Testimonials</a>
-            <a @click="mobileMenu = false" href="blog.html" class="hover:text-primary">Blog</a>
-            <a @click="mobileMenu = false" href="index.html#contact" class="hover:text-primary">Contact</a>
-        </div>
     </header>
 
     <main class="pt-32 pb-20 px-6">
@@ -146,9 +170,46 @@
                 <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Insights, stories, and wellness guidance to support your journey.</p>
             </div>
 
-            <div id="blog-posts" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"></div>
+            <div id="blog-posts" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                </div>
         </div>
     </main>
+
+    <div x-show="selectedPost" 
+         x-cloak 
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        
+        <div class="bg-white dark:bg-zinc-900 w-full max-w-3xl max-h-[90vh] rounded-3xl overflow-hidden shadow-2xl relative flex flex-col"
+             @click.away="selectedPost = null">
+            
+            <button @click="selectedPost = null" class="absolute top-4 right-4 z-10 bg-white/80 dark:bg-zinc-800/80 p-2 rounded-full hover:bg-primary hover:text-white transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="overflow-y-auto p-6 md:p-10">
+                <template x-if="selectedPost?.imageBase64">
+                    <img :src="selectedPost.imageBase64" class="w-full h-64 md:h-80 object-cover rounded-2xl mb-8" />
+                </template>
+                
+                <div class="mb-4">
+                    <span class="text-primary font-bold text-sm uppercase tracking-widest">Wellness Insight</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mt-2" x-text="selectedPost?.title"></h2>
+                    <p class="text-gray-500 text-sm mt-2">Posted on <span x-text="new Date(selectedPost?.timestamp).toLocaleString()"></span></p>
+                </div>
+
+                <hr class="border-gray-100 dark:border-zinc-800 my-6">
+
+                <div class="text-gray-700 dark:text-gray-300 leading-relaxed text-lg prose-text" x-text="selectedPost?.content">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="py-12 px-6 bg-accent dark:bg-zinc-900 text-white">
         <div class="max-w-7xl mx-auto text-center">

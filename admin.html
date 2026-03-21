@@ -36,7 +36,7 @@
             const adminDiv = document.getElementById('admin');
             const userInfo = document.getElementById('user-info');
 
-            if (user && user.email === 'lhjconsultenquiry@gmail.com') {
+            if (user && user.email === 'pauladamu600@gmail.com') {
                 loginDiv.style.display = 'none';
                 adminDiv.style.display = 'block';
                 userInfo.textContent = `Logged in as: ${user.email}`;
@@ -46,7 +46,7 @@
                 if (user) {
                     // Wrong email, sign out
                     signOut(auth);
-                    alert('Access denied. Only lhjconsultenquiry@gmail.com can access this panel.');
+                    alert('Access denied. Only pauladamu600@gmail.com can access this panel.');
                 }
             }
         });
